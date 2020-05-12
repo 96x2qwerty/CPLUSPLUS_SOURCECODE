@@ -1,0 +1,187 @@
+#include<iostream>
+#include<conio.h>
+using namespace std;
+class TapHop;
+class Node
+{
+      float data;
+      Node *next;
+      public:
+             Node(float d=0, Node *link=NULL) { data =d; next=link; }
+             ~Node(){ next=NULL; }
+             float getdata() {return data; }
+             friend class TapHop;
+};
+class TapHop
+{
+      Node *head,*last;
+      int spt;
+      public:
+             TapHop() { head=last= NULL; spt=0; }
+             ~TapHop();
+             bool find ( float );
+             void add_head ( float );
+             void add_last (float );
+             bool delete_head ( float &);
+             bool empty();
+             friend istream & operator >> ( istream &, TapHop &);
+             friend ostream & operator << ( ostream &, TapHop );
+             const TapHop& operator = (const TapHop &);
+             TapHop operator +( const TapHop &);
+             TapHop operator *( const TapHop &);
+             float operator [] ( int );
+             
+};
+// Kiem tra taphop co rong~ ko
+bool TapHop::empty()
+{
+     return (head == NULL );
+}
+// Tim xem phan tu x co nam trong taphop ko
+bool TapHop::find(float x)
+{
+     Node *p=head;
+     while( p!=NULL )
+     {
+            if( p->data==x ) return true;
+            p=p->next;
+     }
+     return false;
+}
+// Them 1 phan tu vao dau
+void TapHop::add_head (float x)
+{
+     Node *p = new Node(x);
+     if( spt==0 ) head = last = p;
+     else 
+     {
+          p->next= head;
+          head= p;
+     }
+     spt++;
+}
+// Them 1 phan tu vao cuoi
+void TapHop::add_last (float x)
+{
+     Node *p = new Node(x);
+     if( head== NULL ) head=last = p;
+     else 
+     {
+          last->next=p;
+          last= p;
+     }
+     spt++;
+}
+// Xoa 1 phan tu o dau
+bool TapHop::delete_head (float &x)
+{
+     Node *p=head;
+     if( this->empty() ) return false;
+     else
+     {
+         x=p->data;
+         if( head==last ) head=last = NULL;
+         else head= p->next;
+     }
+     spt--;
+     return true;
+}
+// Ham huy taphop
+TapHop::~TapHop()
+{
+     Node *p =head;
+     while( p!=NULL)
+     {
+            head=p->next;
+            delete p;
+            p=head;
+     }
+     spt=0;
+}
+// Nhap 1 taphop
+istream & operator >> ( istream &istrim, TapHop &a)
+{
+        float x;
+        int n;
+        cout<<"Nhap so luong phan tu: ";
+        istrim>>n;
+        for(int i=0; i<n; i++)
+        {
+                istrim>>x;
+                a.add_last(x);
+        }
+        return istrim;
+}
+// In 1 taphop
+ostream & operator << ( ostream &ostrim, TapHop a)
+{
+        float x;
+        while( a.head != NULL)
+        {
+               a.delete_head(x);
+               cout<<x<<endl;
+        }
+}
+// Gan 2 tap hop
+const TapHop& TapHop::operator = (const TapHop &b)
+{
+       Node *p =head;
+       while( p!=NULL)
+       {
+            head=p->next;
+            delete p;
+            p=head;
+       }
+       spt=0;
+       for(Node *p=b.head; p!= NULL; p=p->next)
+       this->add_last( p->getdata() );
+       return *this;
+}
+// Hop 2 tap hop
+TapHop TapHop::operator +( const TapHop &b)
+{
+       TapHop c;
+       c=*this;
+       for(Node *p=b.head; p!= NULL; p=p->next)
+            if(! (this->find( p->getdata() )) )
+                  c.add_last( p->getdata() );
+       return c;
+}
+// Giao cua 2 tap hop
+TapHop TapHop::operator * (const TapHop &b)
+{
+       TapHop c;
+       for( Node *p = b.head; p!= NULL; p=p->next)
+           if ( this->find(p->getdata()) )
+                c.add_last(p->getdata() );
+       return c;
+}
+// return phan tu thu i cua tap hop
+float TapHop::operator [] ( int i)
+{
+      if ( i>spt ) return -100;
+      else 
+      for( Node *p = this->head; p!= NULL; p=p->next)
+      {
+           if(i==0 ) return p->getdata();
+           i--;
+      }
+}
+main()
+{
+      TapHop a,b,c;
+      float x;
+      cin>>a;
+      cout<<"Tap hop A:\n";
+      cout<<a;
+      cin>>b;
+      cout<<"Tap hop B:\n";
+      cout<<b;
+      cout<<"Giao cua A va B:\n";
+      c=a*b;
+      cout<<c;
+      cout<<"Hop cua A va B:\n";
+      c=a+b;
+      cout<<c;
+      getch();
+} 

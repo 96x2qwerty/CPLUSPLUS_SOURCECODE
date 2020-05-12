@@ -1,0 +1,107 @@
+#include<iostream>
+#include<conio.h>
+#include<string>
+using namespace std;
+class NhanVien
+{
+      protected:
+      string ten;
+      int manv;
+      float hsl,pc,tu;
+      public:
+             NhanVien(string t="\0", int m=0, float hs=0, float p=0, float u=0)
+             {
+                       ten=t;
+                       manv=m;
+                       hsl=hs;
+                       pc=p;
+                       tu=u;
+             }
+             virtual ~NhanVien()
+             {
+                        cout<<"\nHuy tu cua lop NhanVien da duoc goi\n";
+             }
+             virtual void nhap()
+             {
+                  cin.ignore(1);
+                  cout<<"Nhap ten nhan vien: ";
+                  getline(cin,ten);
+                  cout<<"Nhap ma nhan vien: ";
+                  cin>>manv;
+                  cout<<"Nhap:\nHe so luong: ";
+                  cin>>hsl;
+                  cout<<"Phu cap: ";
+                  cin>>pc;
+                  cout<<"Tam ung: ";
+                  cin>>tu;
+                  
+             }
+             float luong()
+             {
+                   return hsl*1150 + pc-tu;
+             }
+             virtual void xuat()
+             {
+                  cout<<"\nNhan vien: "<<ten<<"\nMa :"<<manv<<"\nHe so luong: "
+                  <<hsl<<"  Phu cap: "<<pc<<"   Tam ung: "<<tu<<"   Luong: "
+                  <<luong()<<"\n\n";
+             }
+};
+class CanBo:public NhanVien
+{
+      string chucvu;
+      float pccv;
+      public:
+             CanBo(string t="\0",int m=0,string cv="\0", float hs=0, float p=0, float u=0,float pcc =0)
+             :NhanVien( t,m,hs,p,u)
+             {
+                        chucvu=cv;
+                        pccv=pcc;
+             }
+             ~CanBo()
+             {
+                        cout<<"\nHuy tu cua lop CanBo da duoc goi\n";
+             }
+             void nhap()
+             {
+                  
+                  NhanVien::nhap();
+                  cin.ignore(1);
+                  cout<<"Nhap chuc vu: ";
+                  getline(cin, chucvu);
+                  cout<<"Nhap phu cap chuc vu: ";
+                  cin>>pccv;
+                  
+             }
+             float luong()
+             {
+                   return NhanVien::luong()+pccv;
+             }
+             void xuat()
+             {
+                  cout<<"\nNhan vien: "<<ten<<"\nMa :"<<manv<<"   Chuc vu: "<<chucvu
+                  <<"\nHe so luong: "<<hsl<<"  Phu cap: "<<pc<<"   Tam ung: "<<tu
+                  <<"\nPhu cap chuc vu: "<<pccv<<"   Luong: "<<luong()<<"\n\n";
+             }
+};
+
+main()
+{
+      int n,choose;
+      cout<<"Nhap so luong phan tu: ";
+      cin>>n;
+      NhanVien *p[n];
+      for(int i=0; i<n; i++)
+      {
+              cout<<"\nNhap du lieu cho nhan vien hay can bo ( 0-NhanVien / 1-CanBo ):";
+              cin>>choose;
+              if( choose == 0 ) p[i]=new NhanVien;
+              else p[i]=new CanBo;
+              p[i]->nhap();
+      }
+      cout<<"\n\nDanh sach:\n";
+      for(int i=0; i<n; i++)
+      p[i]->xuat();
+      getch();
+      return 0;
+}
